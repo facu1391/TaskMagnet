@@ -6,16 +6,25 @@ import tasksRouter from "./routes/tasks.js";
 import config from "./config/index.js"
 const { port, databaseUrl, databaseName: dbName } = config;
 
+import { errorHandler, notFoundMiddleware } from "./utils/middlewares/errorMiddlewares.js";
+
 const app = express();
 
-//Middleware
+//Global Middlewares
 app.use(express.json());
 
 //Routes
 app.use("/tasks", tasksRouter);
 //app.use("/focus-sessions", focuSessionRouter);
 
+//Catch 404
+app.use(notFoundMiddleware);
+
+//Error hanlder
+app.use(errorHandler);
+
 app.listen(port, () => {
-    console.log(`El servidor esta funcionado en el puerto ${port}`);
     mongoose.connect(databaseUrl, {dbName});
+    console.log(`El servidor esta funcionado en el puerto ${port}`);
 });
+
